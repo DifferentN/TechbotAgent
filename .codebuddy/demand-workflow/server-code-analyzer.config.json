@@ -1,0 +1,14 @@
+{
+  "codeRoot": "",
+  "description": "后台代码根目录。请填写绝对路径，或相对于当前工作区根目录的路径。示例：server、backend、/path/to/server-repo。",
+  "includeGlobs": [
+    "**/*"
+  ],
+  "excludeGlobs": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/target/**",
+    "**/.git/**"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "codeRoot": "",
+  "description": "Android 客户端代码根目录。请填写绝对路径，或相对于当前工作区根目录的路径。示例：android、client/android、/path/to/android-repo。",
+  "includeGlobs": [
+    "**/*"
+  ],
+  "excludeGlobs": [
+    "**/.gradle/**",
+    "**/build/**",
+    "**/.idea/**",
+    "**/.git/**"
+  ]
+}
