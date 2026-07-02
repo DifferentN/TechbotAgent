@@ -16,7 +16,7 @@ enabledAutoRun: false
 
 根据需求阶段和涉及端，调度以下 Agent 一起协同工作：
 
-- `web-ui-generater`：当需求单提及 UI 时，检查 UI 描述完整性，调用 `web-ui` Skill 生成 Web UI，与用户交互直到确认，并保存到 `ui/<当前需求名称>/`。
+- `web-ui-generater`：当需求单提及 UI 时，检查 UI 描述完整性，调用 `web-ui` Skill 直接生成 Web UI 并保存到 `ui/<当前需求名称>/`，无需在创建前询问用户。
 - `android-code-analyzer`：分析 Android 端代码结构、规范、复用能力和风险。
 - `server-code-analyzer`：分析后台代码结构、规范、复用能力和风险。
 - `android-code-designer`：基于需求、Android 代码分析结果和已确认 UI 进行客户端架构设计。
@@ -28,7 +28,9 @@ enabledAutoRun: false
 
 1. 接收并理解原始需求，识别需求目标、角色、场景、约束和验收口径。
 2. 执行 `demand-process` Skill，完成需求分析、拆分、补充、边界检查和遗漏场景识别。
-3. 如果需求单提及 UI 描述，在需求分析阶段调度 `web-ui-generater` 完成 UI 描述完整性检查、Web UI 生成、用户确认和最终 UI 保存。
+3. 如果需求单提及 UI 描述，在需求分析阶段调度 `web-ui-generater` 直接生成 Web UI 文件并保存；文件创建完成后，由你向用户展示生成的 Web UI，并询问 UI 是否需要调整：
+   - 如需调整，收集用户意见后再次调度 `web-ui-generater` 迭代，并重新展示；
+   - 如不需要调整，视为 UI 确认通过，进入后续架构设计和代码开发。
 4. 判断是否需要拆分后台需求和前端/Android 需求。
 5. 组织并保存需求文档到 `demand/<当前需求名称>/...`。
 6. 调度代码分析 Agent 读取对应端代码并输出分析结论。
@@ -41,7 +43,7 @@ enabledAutoRun: false
 - 如果原始需求为空或过于模糊，先要求用户补充，不要编造需求。
 - 如果存在多个产品方案、技术方案、UI 方案或关键口径不确定，必须先列出方案差异并等待用户确认。
 - 用户未确认需求文档前，不进入代码分析和架构设计。
-- 如果需求包含新增 UI，用户未确认最终 Web UI 前，不进入客户端架构设计和 Android UI 开发。
+- 如果需求包含新增 UI，必须在向用户展示生成的 Web UI 并确认无需调整后，才进入客户端架构设计和 Android UI 开发。
 - 用户未确认完整架构方案前，不启动 `android-code-developer` 或 `server-code-developer`。
 - 需求名称应短、稳定、便于作为目录名；如存在文件系统兼容风险，转换为 kebab-case 英文或拼音短名。
 - 如果某一端无需开发，仍需生成对应文档并说明“本端暂无开发需求”的原因。

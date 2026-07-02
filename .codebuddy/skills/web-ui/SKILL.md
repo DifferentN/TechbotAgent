@@ -11,7 +11,7 @@ description: This skill should be used by web-ui-generater to generate, refine, 
 
 ## Input Requirements
 
-生成前确认以下信息：
+生成时参考以下信息：
 
 1. 页面目标和用户角色
 2. 页面信息架构和核心内容
@@ -21,16 +21,15 @@ description: This skill should be used by web-ui-generater to generate, refine, 
 6. 适配要求：移动端、桌面端、响应式、深色模式等
 7. 需要复用或对齐的现有 UI 风格
 
-如关键信息缺失，先输出待确认问题，不直接生成最终 UI。
+如关键信息缺失，直接基于需求上下文和常见最佳实践做出合理假设并继续生成，不向用户提问；在 `ui-spec.md` 中记录这些默认假设。
 
 ## Generation Workflow
 
 1. 梳理 UI 需求，形成 `ui-spec`。
 2. 设计页面结构、组件层级和交互状态。
-3. 生成可预览的 Web UI，优先使用单文件 `index.html`，包含 HTML、CSS 和必要的轻量 JavaScript。
-4. 将 Web UI 交给用户确认。
-5. 根据用户反馈迭代，直到用户明确同意。
-6. 保存最终产物到 `ui/<当前需求名称>/`。
+3. 直接生成可预览的 Web UI，优先使用单文件 `index.html`，包含 HTML、CSS 和必要的轻量 JavaScript。
+4. 直接保存产物到 `ui/<当前需求名称>/`，无需在生成前征求用户同意。
+5. 记录关键默认假设，供后续向用户展示时说明。
 
 ## Output Files
 
@@ -47,7 +46,7 @@ description: This skill should be used by web-ui-generater to generate, refine, 
 - 交互说明
 - 状态说明
 - 视觉风格
-- 用户确认记录
+- 关键默认假设
 - 给 `android-ui` Skill 的实现参考
 
 ## Quality Bar

@@ -51,13 +51,13 @@ description: This skill should be used by demand-manager after receiving a new d
 如果需求单中提及 UI 描述，在需求分析阶段调用 `web-ui-generater`：
 
 1. 检查 UI 描述完整性，例如页面目标、布局、信息层级、交互、状态、风格样式、颜色、字体、间距、适配等。
-2. 如果 UI 描述不完整，先让用户补充关键 UI 信息。
-3. 调用 `web-ui` Skill 生成 Web UI。
-4. 将生成的 Web UI 给用户确认，并根据反馈迭代。
-5. 直到用户明确同意后，将最终 Web UI 保存到 `ui/<当前需求名称>/`。
+2. 对缺失的 UI 细节直接做出合理假设，不向用户提问。
+3. 调用 `web-ui` Skill 直接生成并保存 Web UI 到 `ui/<当前需求名称>/`，无需在创建前征求用户同意。
+4. Web UI 文件创建完成后，由 `demand-manager` 向用户展示生成结果，并询问 UI 是否需要调整。
+5. 如需调整，收集意见后再次调用 `web-ui-generater` 迭代并重新展示；如不需要调整，视为 UI 确认通过。
 6. 在前端/Android 需求文档中记录最终 UI 路径和确认结论。
 
-用户未确认最终 Web UI 前，不进入客户端架构设计和 Android UI 开发。
+UI 未确认无需调整前，不进入客户端架构设计和 Android UI 开发。
 
 ### 4. 输出需求文档
 
