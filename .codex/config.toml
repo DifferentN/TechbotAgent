@@ -1,0 +1,7 @@
+# 项目级 Codex 配置；仅在目标项目被标记为 trusted 时加载。
+# 不设置 sandbox 或审批策略，避免覆盖使用者的本机安全策略。
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 4
+default_subagent_reasoning_effort = "medium"

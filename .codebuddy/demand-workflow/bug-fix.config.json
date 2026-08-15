@@ -1,0 +1,27 @@
+{
+  "description": "Bug 修复工作流配置。填写项目路径和命令后再使用 /bug-fix；仅保存私钥路径，绝不保存私钥内容、密码、Token 或其他凭据。",
+  "androidProjectRoot": "",
+  "backendProjectRoot": "",
+  "sshPrivateKeyPath": "",
+  "sshTarget": "",
+  "sshConnectTimeoutSeconds": 10,
+  "dockerLogsCommand": "",
+  "serviceDeployCommand": "",
+  "androidRunCommand": "",
+  "adbSerial": "",
+  "verificationMode": "both",
+  "maxRepairAttempts": 3,
+  "fieldDescriptions": {
+    "androidProjectRoot": "Android 项目根目录。填写绝对路径，或相对当前工作区的路径。",
+    "backendProjectRoot": "后台项目根目录。填写绝对路径，或相对当前工作区的路径。",
+    "sshPrivateKeyPath": "远程服务 SSH 私钥文件的绝对路径；只填写路径，不得写入私钥内容。",
+    "sshTarget": "SSH 登录目标，格式为 用户名@服务器IP 或 用户名@主机名，例如 deploy@10.0.0.8。",
+    "sshConnectTimeoutSeconds": "SSH 非交互连接超时时间，单位为秒。",
+    "dockerLogsCommand": "仅用于远程诊断的只读日志命令，必须为单条 docker logs 或 docker container logs 命令。例如：docker logs --tail 2000 api-service。",
+    "serviceDeployCommand": "用户确认后在 sshTarget 上执行的服务发布命令。例如：cd /srv/api && docker compose up -d --build。不得包含密码、Token 或私钥。",
+    "androidRunCommand": "用户确认后在 androidProjectRoot 中执行的构建、安装和启动 App 命令。例如：./gradlew :app:installDebug && adb shell monkey -p com.example.app 1。",
+    "adbSerial": "可选。目标 Android 设备序列号；为空时使用 adb 默认选择的设备。",
+    "verificationMode": "发布后验证方式：screenshot、logcat 或 both。",
+    "maxRepairAttempts": "自动诊断与最小修复的最大轮次。每次发布或运行 App 均须重新获得用户确认。"
+  }
+}

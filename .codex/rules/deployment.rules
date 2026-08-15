@@ -1,0 +1,50 @@
+# 规则仅为 Codex 直接执行的常见高风险命令增加确认；
+# 远程 SSH 发布仍由 AGENTS.md、bug-fix prompt 和 bug-fix Agent 的逐轮确认要求约束。
+
+prefix_rule(
+    pattern = ["docker", "restart"],
+    decision = "prompt",
+    justification = "重启容器会影响运行中服务；请确认目标容器和环境。",
+)
+
+prefix_rule(
+    pattern = ["docker", "stop"],
+    decision = "prompt",
+    justification = "停止容器会影响运行中服务；请确认目标容器和环境。",
+)
+
+prefix_rule(
+    pattern = ["docker", "compose", ["up", "restart", "down"]],
+    decision = "prompt",
+    justification = "Docker Compose 操作可能发布、重启或停止服务；请确认目标环境。",
+)
+
+prefix_rule(
+    pattern = ["kubectl", "apply"],
+    decision = "prompt",
+    justification = "Kubernetes 资源变更可能影响运行中服务；请确认集群和命名空间。",
+)
+
+prefix_rule(
+    pattern = ["helm", ["upgrade", "rollback"]],
+    decision = "prompt",
+    justification = "Helm 发布或回滚可能改变服务状态；请确认目标 release 和 namespace。",
+)
+
+prefix_rule(
+    pattern = ["terraform", "apply"],
+    decision = "prompt",
+    justification = "Terraform apply 会修改基础设施；请先确认计划和目标工作区。",
+)
+
+prefix_rule(
+    pattern = ["terraform", "destroy"],
+    decision = "forbidden",
+    justification = "禁止通过 Codex 直接销毁基础设施；请使用受保护的基础设施变更流程。",
+)
+
+prefix_rule(
+    pattern = ["adb", "install"],
+    decision = "prompt",
+    justification = "安装 APK 会改变连接设备状态；请确认设备和构建产物。",
+)

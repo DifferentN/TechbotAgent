@@ -1,0 +1,18 @@
+{
+  "codeRoot": "",
+  "description": "后台代码根目录。填写绝对路径，或相对目标工作区根目录的路径。示例：server、backend、/path/to/server-repo。",
+  "includeGlobs": ["**/*"],
+  "excludeGlobs": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/target/**",
+    "**/.git/**",
+    "**/.env",
+    "**/.env.*",
+    "**/secrets/**",
+    "**/credentials/**",
+    "**/*.pem",
+    "**/*.key"
+  ]
+}
