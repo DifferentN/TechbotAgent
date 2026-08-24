@@ -7,7 +7,7 @@ description: 此 Skill 用于诊断和修复 Android 或后台 Bug：结合用�
 
 ## 配置与安全边界
 
-读取 `.codex/demand-workflow/bug-fix.config.json`。校验 Android/后台根目录、SSH 私钥路径、单一 SSH 目标、只读 Docker 日志命令、发布/启动命令、设备序列号、验证方式和最大轮次。
+读取 `.codex/demand-workflow/remote-publish-log.config.json`。校验 Android/后台根目录、SSH 私钥路径、单一 SSH 目标、只读 Docker 日志命令、发布/启动命令、设备序列号、验证方式和最大轮次。
 
 - 私钥路径仅用于 `ssh -i`，绝不读取、显示、复制、提交或写入私钥内容。
 - `dockerLogsCommand` 只能是单条 `docker logs` 或 `docker container logs`，拒绝换行、重定向、管道、命令替换和 Shell 拼接。

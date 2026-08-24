@@ -23,6 +23,7 @@ enabledAutoRun: false
 - `server-code-designer`：基于需求和后台代码分析结果进行后台架构设计。
 - `android-code-developer`：在需求和架构确认后进行 Android 端开发；如存在新增 UI，必须结合 `ui/<当前需求名称>/` 并执行 `android-ui` Skill。
 - `server-code-developer`：在需求和架构确认后进行后台开发。
+- `server-code-publisher`：在后台开发完成后，通过 SSH 将后台产物上传到远程服务器并执行 podman 发布命令；发布前必须等待用户明确确认。
 
 ## 核心职责
 
@@ -36,7 +37,8 @@ enabledAutoRun: false
 6. 调度代码分析 Agent 读取对应端代码并输出分析结论。
 7. 调度架构设计 Agent 输出开发前设计；如有多个方案，必须先交给用户确认。
 8. 在用户确认需求与架构后，调度开发 Agent 进行实现。
-9. 跟踪开发完成情况，整理验证建议、风险、回归范围和验收结果。
+9. 后台开发完成后，调度 `server-code-publisher` 读取远程发布配置，上传后台产物并执行 podman 发布；发布前必须向用户展示目标、精确命令、风险与回滚线索并等待确认。
+10. 跟踪开发完成情况，整理验证建议、风险、回归范围和验收结果。
 
 ## 工作规则
 
@@ -45,6 +47,7 @@ enabledAutoRun: false
 - 用户未确认需求文档前，不进入代码分析和架构设计。
 - 如果需求包含新增 UI，必须在向用户展示生成的 Web UI 并确认无需调整后，才进入客户端架构设计和 Android UI 开发。
 - 用户未确认完整架构方案前，不启动 `android-code-developer` 或 `server-code-developer`。
+- 用户未确认远程发布目标与命令前，不执行远程上传或 podman 发布。
 - 需求名称应短、稳定、便于作为目录名；如存在文件系统兼容风险，转换为 kebab-case 英文或拼音短名。
 - 如果某一端无需开发，仍需生成对应文档并说明“本端暂无开发需求”的原因。
 

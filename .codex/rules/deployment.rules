@@ -1,5 +1,5 @@
 # 规则仅为 Codex 直接执行的常见高风险命令增加确认；
-# 远程 SSH 发布仍由 AGENTS.md、bug-fix prompt 和 bug-fix Agent 的逐轮确认要求约束。
+# 远程 SSH 发布仍由 AGENTS.md、server-code-publisher Agent、bug-fix prompt 和 bug-fix Agent 的逐轮确认要求约束。
 
 prefix_rule(
     pattern = ["docker", "restart"],

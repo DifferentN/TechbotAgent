@@ -11,7 +11,7 @@ description: This skill should be used when diagnosing and fixing an Android or 
 
 ## Required Configuration
 
-读取 `.codebuddy/demand-workflow/bug-fix.config.json`。开始前校验以下字段：
+读取 `.codebuddy/demand-workflow/remote-publish-log.config.json`。开始前校验以下字段：
 
 - `androidProjectRoot` 与 `backendProjectRoot`：存在的项目根目录；
 - `sshPrivateKeyPath`：仅供 SSH 使用的现有私钥路径，绝不读取或显示密钥内容；

@@ -12,7 +12,7 @@ enabledAutoRun: false
 
 ## 配置与边界
 
-启动时必须读取 `.codebuddy/demand-workflow/bug-fix.config.json`，并先完成校验：
+启动时必须读取 `.codebuddy/demand-workflow/remote-publish-log.config.json`，并先完成校验：
 
 1. `androidProjectRoot`、`backendProjectRoot` 必须存在且是明确的项目根目录；仅可在这两个目录内读取、修改和执行本地项目命令。
 2. `sshPrivateKeyPath` 必须是存在的普通文件；只将其作为 `ssh -i` 参数使用，绝不读取、复制、输出或提交密钥内容。

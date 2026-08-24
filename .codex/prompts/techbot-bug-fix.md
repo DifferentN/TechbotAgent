@@ -11,7 +11,7 @@ $ARGUMENTS
 
 1. 如果描述为空或缺少现象、预期结果、复现步骤、影响范围、发生时间，先收集必要信息；不要采集日志或修改代码。
 2. 使用 `bug-fix` 子代理并显式加载 `$bug-fix` Skill。
-3. 先读取并校验 `.codex/demand-workflow/bug-fix.config.json`。项目根目录、SSH 私钥路径、SSH 目标、Docker 日志命令或 ADB 设置无效时，说明缺失项并停止。
+3. 先读取并校验 `.codex/demand-workflow/remote-publish-log.config.json`。项目根目录、SSH 私钥路径、SSH 目标、Docker 日志命令或 ADB 设置无效时，说明缺失项并停止。
 4. 在系统临时目录采集 `adb logcat -d -v threadtime > logcat.txt`，再通过非交互 SSH 仅执行已校验的只读 Docker 日志命令；关联用户描述、两端日志和源码证据定位根因。
 5. 仅在根因已有证据时，在配置的 Android/后台根目录实施最小修复、补充必要测试并执行不涉及发布、安装或启动 App 的本地检查。
 6. 在远程服务发布、容器重启、APK 安装或 App 启动前，展示本轮目标、精确命令、风险、回滚线索和验证方式，并等待用户对本轮的明确确认。未确认时不得执行。

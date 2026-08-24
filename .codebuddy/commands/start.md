@@ -63,6 +63,12 @@ $ARGUMENTS
    - 对应 code-analyzer 的代码分析结果；
    - 当前仓库已有编码规范、目录结构、命名风格和测试习惯。
 
+9. 后台开发完成后，调用或委派给 `server-code-publisher` 进行远程发布：
+   - 读取 `.codebuddy/demand-workflow/remote-publish-log.config.json`；
+   - 通过 SSH 将 `backendProjectRoot` 下的 `main.go` 与 `uploadFolders` 中配置的文件夹上传到 `remoteDir`；
+   - 读取 `podmanPublishCommandFile`（默认 `dockerStart.txt`）中的 podman 发布命令，在远程先删除旧容器再创建新容器；
+   - 在执行任何上传或发布命令前，必须展示本轮目标、精确命令、风险和回滚线索，并等待用户明确确认。
+
 ## 最终汇报
 
 完成后简要汇报：
@@ -70,4 +76,5 @@ $ARGUMENTS
 - 需求文档路径；
 - 架构文档路径；
 - 涉及的后台和 Android 代码变更；
+- 后台发布结果（上传清单、podman 发布命令与容器状态）；
 - 未完成项、风险或需要用户继续确认的问题。

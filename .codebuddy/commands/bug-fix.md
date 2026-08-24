@@ -13,7 +13,7 @@ $ARGUMENTS
 
 1. 如果没有 Bug 描述，先要求用户提供现象、预期结果、复现步骤、影响范围和发生时间；不要采集日志或修改代码。
 2. 唤醒并委派给 `bug-fix` Agent，执行 `bug-fix` Skill。
-3. 必须先读取并校验 `.codebuddy/demand-workflow/bug-fix.config.json`；配置中的项目根目录、SSH 私钥路径、SSH 目标、Docker 日志命令或设备设置无效时，说明缺失项并停止。
+3. 必须先读取并校验 `.codebuddy/demand-workflow/remote-publish-log.config.json`；配置中的项目根目录、SSH 私钥路径、SSH 目标、Docker 日志命令或设备设置无效时，说明缺失项并停止。
 4. 使用用户描述、`adb logcat -d -v threadtime > logcat.txt` 获取的 Android 日志，以及通过非交互 SSH 执行只读 Docker 日志命令获取的服务日志定位根因。
 5. 在已证实根因后，允许仅在配置的 Android/后台项目根目录中实施最小代码修复并运行不涉及发布、安装或启动 App 的本地检查。
 6. 在执行远程服务发布命令或 Android App 运行命令前，必须展示本轮目标、精确命令、风险和验证方式，并等待用户明确确认。未确认时绝不发布、重启服务、安装 APK 或运行 App。

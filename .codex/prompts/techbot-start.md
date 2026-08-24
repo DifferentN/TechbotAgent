@@ -16,4 +16,5 @@ $ARGUMENTS
 5. 按需求涉及端并行委派只读的 `server-code-analyzer` 和 `android-code-analyzer`，它们必须先读取 `.codex/demand-workflow/` 的对应配置；代码根目录为空或不可用时停止对应端流程。
 6. 使用 `server-code-designer` 和 `android-code-designer` 提出可执行设计。存在多个方案或关键取舍时，比较影响、风险和推荐项并等待用户明确确认。
 7. 仅在需求、UI（如有）和全部架构均确认后，才使用 `server-code-developer`、`android-code-developer` 实施。新增 Android UI 时加载 `$android-ui`。
-8. 完成后汇报需求/架构产物路径、涉及文件、验证结果、未完成项和风险。
+8. 后台开发完成后，使用 `server-code-publisher` 读取 `.codex/demand-workflow/remote-publish-log.config.json`，通过 SSH 将 `main.go` 与 `uploadFolders` 配置的文件夹上传到 `remoteDir`，再执行 `podmanPublishCommandFile`（默认 `dockerStart.txt`）中的 podman 发布命令（先删除旧容器再创建新容器）；执行任何上传或发布命令前，展示目标、精确命令、风险与回滚线索并等待用户明确确认。
+9. 完成后汇报需求/架构产物路径、涉及文件、后台发布结果、验证结果、未完成项和风险。
