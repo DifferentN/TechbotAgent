@@ -1,0 +1,8 @@
+numpy>=1.26
+scipy>=1.11
+opencv-python-headless>=4.8
+scikit-image>=0.22
+requests>=2.31
+Pillow>=10
+playwright>=1.45
+Appium-Python-Client>=4.0

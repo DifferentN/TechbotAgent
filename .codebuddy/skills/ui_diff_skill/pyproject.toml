@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ui-diff-skill"
+version = "1.0.0"
+description = "Figma/Web vs Android/iOS semantic UI diff skill"
+requires-python = ">=3.10"
+
+[project.scripts]
+ui-diff-skill = "ui_diff_skill.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ui_diff_skill*"]
