@@ -1,6 +1,6 @@
 {
-  "codeRoot": "",
-  "description": "后台代码根目录。填写绝对路径，或相对目标工作区根目录的路径。示例：server、backend、/path/to/server-repo。",
+  "codeRoot": "/Users/lizhenghao/Documents/GitHub/MoMeetProject/momeetserver",
+  "description": "/Users/lizhenghao/Documents/GitHub/MoMeetProject/momeetserver",
   "includeGlobs": ["**/*"],
   "excludeGlobs": [
     "**/node_modules/**",

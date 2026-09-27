@@ -9,7 +9,8 @@
   "uploadFolders": [
     "data-access",
     "entrance",
-    "menses"
+    "menses",
+    "asr-service"
   ],
   "podmanPublishCommandFile": "dockerStart.txt",
   "nginxConfigFile": "nginxConfig.txt",
