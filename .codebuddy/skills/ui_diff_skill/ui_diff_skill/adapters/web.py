@@ -3,8 +3,11 @@ from ..core.models import Bounds, Style, Component, Snapshot
 from ..core.types import normalize_type
 
 class WebAdapter:
-    def __init__(self,url,width=390,height=844):
+    def __init__(self,url,width=390,height=844,scroll_selector=None,target_y=260,click_selector=None,scope_selector=None,scroll_padding=0):
         self.url=url;self.width=width;self.height=height
+        self.scroll_selector=scroll_selector;self.target_y=target_y
+        self.click_selector=click_selector
+        self.scope_selector=scope_selector;self.scroll_padding=scroll_padding
 
     @staticmethod
     def _px(v):
@@ -20,10 +23,32 @@ class WebAdapter:
             browser=p.chromium.launch(headless=True)
             page=browser.new_page(viewport={"width":self.width,"height":self.height})
             page.goto(self.url,wait_until="networkidle")
+            if self.scroll_selector:
+                page.evaluate("""([selector, targetY]) => {
+                  const target = document.querySelector(selector);
+                  const scroll = document.querySelector('#scrollArea');
+                  if (!target || !scroll) throw new Error('Web scroll target unavailable');
+                  scroll.scrollTop += target.getBoundingClientRect().top - targetY;
+                }""", [self.scroll_selector, self.target_y])
+                if self.scroll_padding:
+                    page.evaluate("""([selector, targetY, padding]) => {
+                      const target = document.querySelector(selector);
+                      const scroll = document.querySelector('#scrollArea');
+                      scroll.style.paddingBottom = `${padding}px`;
+                      scroll.scrollTop += target.getBoundingClientRect().top - targetY;
+                    }""", [self.scroll_selector, self.target_y, self.scroll_padding])
+            if self.click_selector:
+                page.locator(self.click_selector).click()
+                page.wait_for_timeout(350)
             rows=page.evaluate(r"""
-            () => [...document.body.querySelectorAll("*")].map((el,i) => {
+            (scopeSelector) => {
+              const scope = scopeSelector ? document.querySelector(scopeSelector) : document.body;
+              if (!scope) throw new Error('Web scope unavailable');
+              const elements = scopeSelector ? [scope, ...scope.querySelectorAll('*')] : [...scope.querySelectorAll('*')];
+              return elements.map((el,i) => {
               const r=el.getBoundingClientRect(), s=getComputedStyle(el);
-              if(s.display==="none"||s.visibility==="hidden"||r.width<=0||r.height<=0) return null;
+              if(s.display==="none"||s.visibility==="hidden"||r.width<=0||r.height<=0
+                 ||r.bottom<=0||r.top>=innerHeight||r.right<=0||r.left>=innerWidth) return null;
               const direct=[...el.childNodes].filter(n=>n.nodeType===Node.TEXT_NODE)
                 .map(n=>n.textContent||"").join(" ").trim();
               const parent=el.parentElement;
@@ -39,8 +64,9 @@ class WebAdapter:
                 fontFamily:s.fontFamily,fontSize:s.fontSize,fontWeight:s.fontWeight,
                 lineHeight:s.lineHeight,letterSpacing:s.letterSpacing,opacity:s.opacity
               }
-            }).filter(Boolean)
-            """)
+              }).filter(Boolean);
+            }
+            """, self.scope_selector)
             page.screenshot(path=str(img),full_page=False)
             browser.close()
 

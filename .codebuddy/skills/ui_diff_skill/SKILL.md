@@ -1,3 +1,8 @@
+---
+name: ui-diff-skill
+description: Install, verify, and run deterministic UI comparisons between Figma or Web designs and Android/iOS runtime screens. Use when checking layout, typography, color, spacing, missing components, or visual drift against a confirmed design.
+---
+
 # UI Diff Skill
 
 ## Purpose
@@ -38,6 +43,25 @@ Dynamic IMAGE content is ignored by default.
 ```bash
 python scripts/run_ui_diff.py ...
 ```
+
+## Setup
+
+From this skill directory, run the bundled installer. It keeps dependencies in
+`.venv`, installs the matching Playwright Chromium runtime, and verifies Python,
+Chromium, and ADB:
+
+```bash
+python3 scripts/setup_ui_diff.py
+```
+
+Recheck an existing installation without reinstalling:
+
+```bash
+python3 scripts/setup_ui_diff.py --check-only
+```
+
+If macOS sandboxing prevents the Chromium smoke test, rerun outside the sandbox
+or use `--skip-browser-smoke-test`; this skips only the launch check.
 
 ---
 
