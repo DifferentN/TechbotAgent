@@ -5,10 +5,14 @@
 ## 安装
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-playwright install chromium
+python3 scripts/setup_ui_diff.py
+```
+
+脚本会在当前 Skill 下创建 `.venv`、安装 Python 依赖与匹配版本的
+Playwright Chromium，并验证依赖、无头浏览器和 ADB。仅检查现有环境：
+
+```bash
+python3 scripts/setup_ui_diff.py --check-only
 ```
 
 Android 还需要：

@@ -4,6 +4,8 @@ from .matching.lists import detect_repeated_templates
 from .diff import geometry,spacing,typography,color,style,fallback_style
 from .vision import visual
 from .report.writer import write
+from .core.models import serializable
+from .core.utils import write_json
 
 class UIDiffEngine:
     def __init__(self,config):
@@ -13,6 +15,8 @@ class UIDiffEngine:
         out=Path(outdir)
         ds=design_adapter.collect(out/"design")
         rs=runtime_adapter.collect(out/"runtime")
+        write_json(out/"design"/"design_snapshot.json",serializable(ds))
+        write_json(out/"runtime"/"runtime_snapshot.json",serializable(rs))
 
         matches,missing,unexpected=match_components(ds.components,rs.components)
 

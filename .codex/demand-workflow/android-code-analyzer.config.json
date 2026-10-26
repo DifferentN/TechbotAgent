@@ -1,5 +1,5 @@
 {
-  "codeRoot": "",
+  "codeRoot": "/Users/lizhenghao/Documents/GitHub/MoMeetProject/MoMeetAndroid",
   "description": "Android 客户端代码根目录。填写绝对路径，或相对目标工作区根目录的路径。示例：android、client/android、/path/to/android-repo。",
   "includeGlobs": ["**/*"],
   "excludeGlobs": [

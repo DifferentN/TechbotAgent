@@ -6,8 +6,8 @@ from ..core.types import normalize_type
 from ..core.utils import parse_android_bounds
 
 class AndroidADBAdapter:
-    def __init__(self,serial=None):
-        self.serial=serial
+    def __init__(self,serial=None,region_y=None):
+        self.serial=serial;self.region_y=region_y
 
     def devices(self):
         try:
@@ -46,7 +46,10 @@ class AndroidADBAdapter:
             nonlocal counter
             b=parse_android_bounds(n.attrib.get("bounds"))
             current_parent=parent
-            if b and b.width>0 and b.height>0:
+            if b and b.width>0 and b.height>0 and (
+                self.region_y is None or
+                self.region_y[0] <= (b.y+b.height/2)/sh <= self.region_y[1]
+            ):
                 cid=f"android-{counter}";counter+=1
                 semantic=n.attrib.get("resource-id") or n.attrib.get("content-desc") or None
                 c=Component(
