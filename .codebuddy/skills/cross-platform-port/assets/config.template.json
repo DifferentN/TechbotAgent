@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "android_root": "",
+  "ios_root": "",
+  "artifact_root": "porting",
+  "allowed_write_roots": [],
+  "default_ui_policy": "mixed",
+  "validation": {
+    "android": {"build_argv": [], "test_argv": []},
+    "ios": {"build_argv": [], "test_argv": []}
+  }
+}

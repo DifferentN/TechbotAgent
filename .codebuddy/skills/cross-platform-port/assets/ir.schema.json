@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence-linked Android/iOS migration IR",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "task_id", "revision", "direction", "source", "target", "scope", "ui_policy", "evidence", "contracts", "scenarios", "unknowns", "approval"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "task_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "direction": {"enum": ["android-to-ios", "ios-to-android"]},
+    "source": {"$ref": "#/$defs/project"},
+    "target": {"$ref": "#/$defs/project"},
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["included", "excluded"],
+      "properties": {"included": {"$ref": "#/$defs/nonemptyTexts"}, "excluded": {"$ref": "#/$defs/texts"}}
+    },
+    "ui_policy": {"enum": ["mixed", "native", "visual"]},
+    "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "contracts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/contract"}},
+    "scenarios": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/scenario"}},
+    "unknowns": {"type": "array", "items": {"$ref": "#/$defs/unknown"}},
+    "approval": {"$ref": "#/$defs/approval"}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "texts": {"type": "array", "items": {"$ref": "#/$defs/text"}},
+    "nonemptyTexts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/text"}},
+    "project": {
+      "type": "object", "additionalProperties": false,
+      "required": ["root", "baseline", "ui_framework", "minimum_os"],
+      "properties": {
+        "root": {"$ref": "#/$defs/text"}, "baseline": {"$ref": "#/$defs/text"},
+        "ui_framework": {"enum": ["compose", "xml", "swiftui", "uikit"]},
+        "minimum_os": {"$ref": "#/$defs/text"}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "location", "summary"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"},
+        "kind": {"enum": ["code", "test", "runtime", "screenshot", "design", "user"]},
+        "location": {"$ref": "#/$defs/text"}, "summary": {"$ref": "#/$defs/text"}
+      }
+    },
+    "contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "confidence", "evidence_ids", "inputs", "outputs", "preconditions", "side_effects", "data_rules", "lifecycle_rules", "platform_capabilities", "navigation", "states", "transitions"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "title": {"$ref": "#/$defs/text"},
+        "confidence": {"enum": ["verified", "inferred", "unknown"]},
+        "evidence_ids": {"$ref": "#/$defs/texts"},
+        "inputs": {"$ref": "#/$defs/texts"}, "outputs": {"$ref": "#/$defs/texts"},
+        "preconditions": {"$ref": "#/$defs/texts"}, "side_effects": {"$ref": "#/$defs/texts"},
+        "data_rules": {"$ref": "#/$defs/texts"}, "lifecycle_rules": {"$ref": "#/$defs/texts"},
+        "platform_capabilities": {"$ref": "#/$defs/texts"}, "navigation": {"$ref": "#/$defs/texts"},
+        "states": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/state"}},
+        "transitions": {"type": "array", "items": {"$ref": "#/$defs/transition"}}
+      }
+    },
+    "state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "ui"],
+      "properties": {"id": {"$ref": "#/$defs/text"}, "title": {"$ref": "#/$defs/text"}, "ui": {"$ref": "#/$defs/ui"}}
+    },
+    "ui": {
+      "type": "object", "additionalProperties": false,
+      "required": ["components", "constraints", "interactions", "accessibility", "adaptivity", "resources"],
+      "properties": {
+        "components": {"$ref": "#/$defs/texts"}, "constraints": {"$ref": "#/$defs/texts"},
+        "interactions": {"$ref": "#/$defs/texts"}, "accessibility": {"$ref": "#/$defs/texts"},
+        "adaptivity": {"$ref": "#/$defs/texts"}, "resources": {"$ref": "#/$defs/texts"}
+      }
+    },
+    "transition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "from", "to", "event", "guard", "actions", "cancellation", "threading"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "from": {"$ref": "#/$defs/text"}, "to": {"$ref": "#/$defs/text"},
+        "event": {"$ref": "#/$defs/text"}, "guard": {"type": "string"}, "actions": {"$ref": "#/$defs/texts"},
+        "cancellation": {"$ref": "#/$defs/text"}, "threading": {"$ref": "#/$defs/text"}
+      }
+    },
+    "scenario": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "contract_ids", "evidence_ids", "category", "priority", "preconditions", "steps", "expected"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "contract_ids": {"$ref": "#/$defs/nonemptyTexts"},
+        "evidence_ids": {"$ref": "#/$defs/texts"},
+        "category": {"enum": ["happy", "error", "edge", "platform", "ui"]},
+        "priority": {"enum": ["critical", "normal"]},
+        "preconditions": {"$ref": "#/$defs/texts"}, "steps": {"$ref": "#/$defs/nonemptyTexts"},
+        "expected": {"$ref": "#/$defs/nonemptyTexts"}
+      }
+    },
+    "unknown": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "contract_ids", "severity", "status", "question", "resolution"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"}, "contract_ids": {"$ref": "#/$defs/texts"},
+        "severity": {"enum": ["blocker", "high", "normal"]}, "status": {"enum": ["open", "resolved"]},
+        "question": {"$ref": "#/$defs/text"}, "resolution": {"type": "string"}
+      }
+    },
+    "approval": {
+      "type": "object", "additionalProperties": false, "required": ["status", "record", "digest"],
+      "properties": {"status": {"enum": ["pending", "approved"]}, "record": {"type": "string"}, "digest": {"type": "string"}}
+    }
+  }
+}

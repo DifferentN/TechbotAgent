@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "task_id": "synthetic-list-demo",
+  "revision": 1,
+  "source_ir_digest": "",
+  "target_baseline": "synthetic-target-v1-not-a-real-commit",
+  "ui_policy": "mixed",
+  "mappings": [{
+    "contract_id": "C-list", "equivalence": "native-substitute",
+    "target_components": ["教学：目标项目已有列表组件；真实使用时必须填写符号位置"],
+    "rationale": "教学样例，以目标原生列表保留数据与状态契约",
+    "user_impact": "目标平台使用原生滚动反馈；需要真实用户确认",
+    "state_ids": ["S-empty", "S-items"], "transition_ids": ["T-populate", "T-clear"],
+    "scenario_ids": ["A-empty", "A-items"]
+  }],
+  "slices": [{
+    "id": "F-list", "title": "合成只读列表切片", "contract_ids": ["C-list"],
+    "depends_on": [], "files": ["Sources/ListScreen.swift", "Tests/ListScreenTests.swift"],
+    "tests": ["A-empty", "A-items"]
+  }],
+  "ui_acceptance": ["教学：相同数据、主题和字号下核对内容与空态；具体任务需批准截图条件和阈值", "原生滚动反馈差异需批准；独立检查深色、大字体与无障碍"],
+  "rollback": ["教学：按修改清单撤回本任务改动并保留用户已有修改，不自动执行破坏性重置"],
+  "approval": {"status": "pending", "record": "", "digest": ""}
+}

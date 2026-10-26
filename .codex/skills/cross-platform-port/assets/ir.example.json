@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "task_id": "synthetic-list-demo",
+  "revision": 1,
+  "direction": "android-to-ios",
+  "source": {"root": "/example/android", "baseline": "synthetic-source-v1-not-a-real-commit", "ui_framework": "compose", "minimum_os": "Android API 26"},
+  "target": {"root": "/example/ios", "baseline": "synthetic-target-v1-not-a-real-commit", "ui_framework": "swiftui", "minimum_os": "iOS 16"},
+  "scope": {"included": ["教学样例：根据传入的只读项目数组展示列表与空态，无请求和导航"], "excluded": ["真实项目、网络、分页、权限、导航与运行授权"]},
+  "ui_policy": "mixed",
+  "evidence": [{"id": "E-list", "kind": "design", "location": "synthetic fixture only", "summary": "合成契约，禁止作为真实工程的验证证据"}],
+  "contracts": [{
+    "id": "C-list", "title": "合成只读列表", "confidence": "verified", "evidence_ids": ["E-list"],
+    "inputs": ["items: stable id 和 title 数组"], "outputs": ["只读列表或空态"],
+    "preconditions": [], "side_effects": [], "data_rules": ["按输入顺序显示；保留稳定 id；不修改输入"],
+    "lifecycle_rules": ["列表更新只由输入变化触发；不启动后台工作"],
+    "platform_capabilities": [], "navigation": [],
+    "states": [
+      {"id": "S-empty", "title": "空态", "ui": {"components": ["无数据文字"], "constraints": ["内容位于安全区域"], "interactions": ["无可操作控件"], "accessibility": ["朗读无数据提示"], "adaptivity": ["支持深色模式和大字体"], "resources": []}},
+      {"id": "S-items", "title": "列表", "ui": {"components": ["稳定标识的文本列表"], "constraints": ["必要时垂直滚动；文字不遮挡安全区域"], "interactions": ["滚动但不触发导航"], "accessibility": ["按显示顺序朗读标题"], "adaptivity": ["长标题换行；深色模式与大字体"], "resources": []}}
+    ],
+    "transitions": [
+      {"id": "T-populate", "from": "S-empty", "to": "S-items", "event": "输入变为非空", "guard": "items.count > 0", "actions": ["更新可见项目"], "cancellation": "无异步任务", "threading": "UI更新在目标平台UI执行域"},
+      {"id": "T-clear", "from": "S-items", "to": "S-empty", "event": "输入变为空", "guard": "items.count == 0", "actions": ["更新空态"], "cancellation": "无异步任务", "threading": "UI更新在目标平台UI执行域"}
+    ]
+  }],
+  "scenarios": [
+    {"id": "A-empty", "contract_ids": ["C-list"], "evidence_ids": ["E-list"], "category": "ui", "priority": "critical", "preconditions": [], "steps": ["传入空数组"], "expected": ["显示无数据且无副作用"]},
+    {"id": "A-items", "contract_ids": ["C-list"], "evidence_ids": ["E-list"], "category": "happy", "priority": "critical", "preconditions": [], "steps": ["传入两个稳定id项目", "将输入变为空"], "expected": ["按输入顺序显示，随后变为空态"]}
+  ],
+  "unknowns": [],
+  "approval": {"status": "pending", "record": "", "digest": ""}
+}
