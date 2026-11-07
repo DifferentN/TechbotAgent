@@ -1,13 +1,13 @@
 ---
 name: ui-diff-skill
-description: Install, verify, and run deterministic UI comparisons between Figma or Web designs and Android/iOS runtime screens. Use when checking layout, typography, color, spacing, missing components, or visual drift against a confirmed design.
+description: Install, verify, and run deterministic UI comparisons between Figma/Web designs and Android/iOS runtime screens, or directly between Android and iOS runtime UIs. Use when checking cross-platform layout, text, spacing, missing components, or visual drift; report unavailable typography and style measurements as UNKNOWN.
 ---
 
 # UI Diff Skill
 
 ## Purpose
 
-A runnable skill for comparing a Figma/Web design against an Android/iOS runtime UI.
+Compare a Figma/Web design against an Android/iOS runtime UI, or compare Android and iOS runtime screens directly. Preserve the existing design-vs-runtime entry point; use `--baseline-runtime` for cross-platform runtime comparison.
 
 Supported design sources:
 - Figma
@@ -43,6 +43,66 @@ Dynamic IMAGE content is ignored by default.
 ```bash
 python scripts/run_ui_diff.py ...
 ```
+
+## Android ↔ iOS runtime comparison
+
+Choose one runtime as the baseline (`expected`) and the other as the target (`actual`).
+Require one Android side and one iOS side. Use ADB or Appium for Android and Appium +
+XCUITest for iOS. Do not pass `--design-type` or `--design-url` in this mode.
+
+Align both apps to the same page, data, login state, locale, theme, orientation and
+scroll position before capture. Capture sequentially; do not infer synchronized
+state. Obtain explicit confirmation before device commands or Appium sessions;
+sessions can launch/reset/terminate apps depending on capabilities. Do not install
+or start apps implicitly. Edit `examples/ios_caps.json` with the actual device UDID
+and installed bundle ID; its defaults disable app auto-launch and reset.
+
+From the skill directory, compare Android baseline to iOS target:
+
+```bash
+python scripts/run_ui_diff.py \
+  --baseline-runtime android-adb \
+  --baseline-serial ANDROID_SERIAL \
+  --runtime appium --platform ios \
+  --appium-url http://127.0.0.1:4723 \
+  --capabilities examples/ios_caps.json \
+  --comparison-viewport 390x844 \
+  --output ./android-ios-out
+```
+
+Reverse the roles with `--baseline-runtime appium --baseline-platform ios
+--baseline-capabilities examples/ios_caps.json --runtime android-adb --serial
+ANDROID_SERIAL`. Set `--baseline-appium-url` independently when both sides use
+Appium; pass independent `--baseline-capabilities` and `--capabilities` files.
+
+Normalize both sides into the same reference viewport (default `390x844`). Compute
+geometry and spacing deltas in reference logical units, not Android screenshot px
+or physical dp/pt equality. Preserve raw snapshots and screenshot pixel bounds.
+Use `--baseline-content-rect x:y:width:height` and `--runtime-content-rect
+x:y:width:height` to explicitly exclude differing system/safe-area regions; each
+rect uses normalized `[0,1]` coordinates in that side's full viewport. Intersect
+components with the chosen content rect and rebase the visible layout to `[0,1]`.
+Do not guess safe-area insets. Do not use `--runtime-region-y` in this mode.
+
+Supply `--semantic-map /path/to/map.json` when platform identifiers differ. Use a
+JSON object mapping exact baseline IDs to target IDs, for example
+`{"com.example:id/title": "screen_title"}`. Apply mapping to comparison copies
+only. Reuse stable ID → list templates → hierarchical Hungarian → orphan matching.
+Compare parent margins/sibling gaps only when the target parent relation agrees.
+Do not claim native wrapper/accessibility-tree differences are business defects.
+
+Compare captured text for TEXT/BUTTON/INPUT nodes and mark unequal text as FAIL.
+Keep IMAGE center content excluded from visual checks. Report unavailable fonts,
+colors, borders, radii, or visual ROI measurements as UNKNOWN; never turn absence
+of measurements into PASS. Treat ROI SSIM as supporting raster evidence, not font
+metadata or whole-screen semantic equivalence. Review matching confidence and
+missing/unexpected nodes, even when no geometry FAIL exists.
+
+Retain `design/` and `runtime/` artifact names for compatibility; in this mode they
+mean baseline and target. Save original `*_snapshot.json`, normalized
+`comparison_snapshot.json`, PNG/XML, `list_templates.json`, and JSON/HTML reports.
+Include actual source roles, reference units, chosen content rects, limitations and
+matched-property coverage. Show both screenshots side by side in HTML.
 
 ## Setup
 
@@ -189,7 +249,10 @@ Use node attributes:
 - label
 - value
 
-Normalize using screenshot dimensions.
+Read `driver.get_window_rect()` and normalize node bounds against its logical
+width/height after subtracting its x/y origin. Map logical bounds to screenshot
+pixels with `CoordinateMapper`; never divide iOS pt bounds directly by Retina
+screenshot pixels. Fail explicitly when a valid logical viewport is unavailable.
 
 ---
 

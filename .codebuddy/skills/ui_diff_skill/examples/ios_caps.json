@@ -1,0 +1,11 @@
+{
+  "platformName": "iOS",
+  "appium:automationName": "XCUITest",
+  "appium:deviceName": "iPhone",
+  "appium:udid": "REPLACE_WITH_IOS_DEVICE_UDID",
+  "appium:bundleId": "REPLACE_WITH_INSTALLED_APP_BUNDLE_ID",
+  "appium:noReset": true,
+  "appium:autoLaunch": false,
+  "appium:shouldTerminateApp": false,
+  "appium:forceAppLaunch": false
+}

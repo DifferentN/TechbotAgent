@@ -56,7 +56,7 @@ class AndroidADBAdapter:
                     id=cid,type=normalize_type(n.attrib.get("class","")),
                     bounds=b,normalized=Bounds(b.x/sw,b.y/sh,b.width/sw,b.height/sh),
                     screenshot_bounds=b,parent_id=parent,sibling_index=index,sibling_count=count,
-                    name=semantic,semantic_id=semantic,text=n.attrib.get("text") or None,
+                    name=semantic,semantic_id=semantic,text=n.attrib.get("text"),
                     metadata=dict(n.attrib)
                 )
                 comps.append(c);current_parent=cid

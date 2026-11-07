@@ -6,7 +6,7 @@ def normalize_type(raw="", tag="", has_text=False):
         return "IMAGE"
     if t=="button" or "button" in x:
         return "BUTTON"
-    if t in {"input","textarea"} or "edittext" in x or "textfield" in x:
+    if t in {"input","textarea"} or "edittext" in x or "textfield" in x or "xcuielementtypetextview" in x:
         return "INPUT"
     if "textview" in x or "statictext" in x or t in {"span","p","label","h1","h2","h3","h4"}:
         return "TEXT"

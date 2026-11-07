@@ -13,8 +13,16 @@ def compare_parent_margins(ds,rs,matches,config):
 
     for did,rid in pair.items():
         d=dmap[did];r=rmap[rid]
-        if not d.parent_id or d.parent_id not in pair:continue
-        dp=dmap.get(d.parent_id);rp=rmap.get(pair[d.parent_id])
+        if not d.parent_id:continue
+        dp=dmap.get(d.parent_id);rp=rmap.get(pair.get(d.parent_id))
+        if config.get("runtime_comparison") and (not dp or not rp or r.parent_id!=rp.id):
+            for side in ("left","top","right","bottom"):
+                out.append(Difference(
+                    component=d.name or d.id,property=f"margin_{side}",expected=None,actual=None,
+                    delta=None,tolerance={"pass":p,"warning":w},status="UNKNOWN",
+                    source="unmatched-parent-relation",confidence=0.0
+                ))
+            continue
         if not dp or not rp:continue
         dm={
             "left":d.normalized.x-dp.normalized.x,
@@ -56,6 +64,17 @@ def compare_sibling_gaps(ds,rs,matches,config):
         for a,b in zip(items,items[1:]):
             ra=rmap.get(pair[a.id]);rb=rmap.get(pair[b.id])
             if not ra or not rb:continue
+            if config.get("runtime_comparison") and (
+                ra.parent_id!=rb.parent_id or
+                (parent is not None and (parent not in pair or ra.parent_id!=pair[parent]))
+            ):
+                prop="gap_horizontal" if abs(b.normalized.x-a.normalized.x)>=abs(b.normalized.y-a.normalized.y) else "gap_vertical"
+                out.append(Difference(
+                    component=f"{a.name or a.id} -> {b.name or b.id}",property=prop,
+                    expected=None,actual=None,delta=None,tolerance={"pass":p,"warning":w},
+                    status="UNKNOWN",source="unmatched-sibling-relation",confidence=0.0
+                ))
+                continue
 
             # choose axis by dominant design separation
             dx=abs(b.normalized.x-a.normalized.x)

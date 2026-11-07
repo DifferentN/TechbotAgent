@@ -34,8 +34,16 @@ class AppiumAdapter:
         (out/"runtime.xml").write_text(xml,encoding="utf-8")
         with Image.open(BytesIO(png)) as im: sw,sh=im.size
 
-        logical_w=(rect or {}).get("width",sw)
-        logical_h=(rect or {}).get("height",sh)
+        from math import isfinite
+        try:
+            logical_w=float(rect["width"])
+            logical_h=float(rect["height"])
+            origin_x=float(rect.get("x",0))
+            origin_y=float(rect.get("y",0))
+            if not all(isfinite(v) for v in (logical_w,logical_h,origin_x,origin_y)) or min(logical_w,logical_h)<=0:
+                raise ValueError("invalid viewport")
+        except (TypeError,KeyError,ValueError) as exc:
+            raise RuntimeError("APPIUM_LOGICAL_VIEWPORT_UNKNOWN: valid get_window_rect() is required") from exc
         mapper=CoordinateMapper(logical_w,logical_h,sw,sh)
 
         root=ET.fromstring(xml)
@@ -50,15 +58,25 @@ class AppiumAdapter:
 
         def walk(n,parent=None,index=0,count=1):
             nonlocal counter
+            if any(n.attrib.get(key,"true").lower()=="false" for key in ("visible","displayed")):
+                return
             b=get_bounds(n);current_parent=parent
+            if b:
+                b=Bounds(b.x-origin_x,b.y-origin_y,b.width,b.height)
             if b and b.width>0 and b.height>0:
                 cid=f"{self.platform}-{counter}";counter+=1
                 raw=n.attrib.get("class") or n.attrib.get("type") or n.tag
                 sem=n.attrib.get("resource-id") or n.attrib.get("name") or n.attrib.get("label") or n.attrib.get("content-desc")
-                txt=n.attrib.get("text") or n.attrib.get("value") or n.attrib.get("label")
+                node_type=normalize_type(raw)
+                if self.platform=="android":
+                    txt=n.attrib.get("text")
+                elif node_type=="INPUT":
+                    txt=n.attrib.get("value")
+                else:
+                    txt=n.attrib.get("label")
                 sb=mapper.logical_to_screenshot(b)
                 comps.append(Component(
-                    id=cid,type=normalize_type(raw),bounds=b,
+                    id=cid,type=node_type,bounds=b,
                     normalized=Bounds(
                         b.x/max(logical_w,1e-9),b.y/max(logical_h,1e-9),
                         b.width/max(logical_w,1e-9),b.height/max(logical_h,1e-9)
